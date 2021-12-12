@@ -21,11 +21,10 @@ const allMessages = [...new Array(500)].map((_, index) => ({
   sender: allUsers[Math.floor(Math.random() * allUsers.length)],
 }));
 
-function getPage({ pageSize, messages, endIndex }) {
-  if (endIndex < 0) {
-    return messages.slice(messages.length - pageSize, messages.length);
-  }
-  return messages.slice(endIndex - pageSize, endIndex);
+function getPage({ pageSize, messages, endIndex: endIndexParam }) {
+  const endIndex = endIndexParam < 0 ? messages.length : endIndexParam;
+  const startIndex = Math.max(endIndex - pageSize, 0);
+  return messages.slice(startIndex, endIndex);
 }
 
 export const worker = setupWorker(
