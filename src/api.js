@@ -1,6 +1,8 @@
 import { setupWorker, rest } from 'msw';
 import { loremIpsum } from 'lorem-ipsum';
 
+const totalMessagesCount = 500;
+
 function getRandomText() {
   return loremIpsum({
     count: 1,
@@ -15,7 +17,7 @@ const allUsers = [...new Array(5)].map((_, index) => ({
   name: `User ${index}`,
 }));
 
-const allMessages = [...new Array(500)].map((_, index) => ({
+const allMessages = [...new Array(totalMessagesCount)].map((_, index) => ({
   id: index,
   text: `#${index} ${getRandomText()}`,
   sender: allUsers[Math.floor(Math.random() * allUsers.length)],

@@ -3,7 +3,7 @@
   padding: 0.5em;
   width: 60em;
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   line-height: 1.5;
   font-size: 0.75rem;
 }
