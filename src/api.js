@@ -15,6 +15,7 @@ function getRandomText() {
 const allUsers = [...new Array(5)].map((_, index) => ({
   id: index,
   name: `User ${index}`,
+  isMuted: Math.random() > 0.5,
 }));
 
 const allMessages = [...new Array(totalMessagesCount)].map((_, index) => ({
@@ -49,5 +50,10 @@ export const worker = setupWorker(
       ctx.status(200),
       ctx.json({ messages: result })
     );
+  }),
+  rest.get('/api/users/:userId', (req, res, ctx) => {
+    const userId = req.params.userId;
+    const user = allUsers.find((user) => user.id === Number(userId));
+    return res(ctx.delay(1500), ctx.status(200), ctx.json(user));
   })
 );

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery, useQuery } from 'react-query';
 
 import './App.css';
 
@@ -11,6 +11,21 @@ async function getPreviousMessages(messageId) {
 
   const response = await fetch('/api/messages?' + searchParams.toString());
   return response.json();
+}
+
+async function fetchUser(userId) {
+  const response = await fetch('/api/users/' + userId);
+  return response.json();
+}
+
+function Sender({ sender }) {
+  const { data } = useQuery(['users', sender.id], () => fetchUser(sender.id));
+  const isMuted = data?.isMuted;
+  return (
+    <div className="message__sender">
+      {sender.name} {isMuted && ' (Muted)'}
+    </div>
+  );
 }
 
 function App() {
@@ -56,7 +71,7 @@ function App() {
             const { id, text, sender } = message;
             return (
               <div key={id} className="message">
-                <div className="message__sender">{sender.name}</div>
+                <Sender sender={sender} />
                 <div className="message__text">{text}</div>
               </div>
             );
