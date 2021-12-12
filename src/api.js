@@ -10,9 +10,15 @@ function getRandomText() {
   });
 }
 
+const allUsers = [...new Array(5)].map((_, index) => ({
+  id: index,
+  name: `User ${index}`,
+}));
+
 const allMessages = [...new Array(500)].map((_, index) => ({
   id: index,
   text: getRandomText(),
+  sender: allUsers[Math.floor(Math.random() * allUsers.length)],
 }));
 
 export const worker = setupWorker(

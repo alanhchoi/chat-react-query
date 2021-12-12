@@ -15,8 +15,13 @@ function App() {
   return (
     <div>
       {messages.map((message) => {
-        const { id, text } = message;
-        return <div key={id}>{text}</div>;
+        const { id, text, sender } = message;
+        return (
+          <div key={id}>
+            <div>{sender.name}</div>
+            <div>{text}</div>
+          </div>
+        );
       })}
     </div>
   );
