@@ -17,21 +17,31 @@ const allUsers = [...new Array(5)].map((_, index) => ({
 
 const allMessages = [...new Array(500)].map((_, index) => ({
   id: index,
-  text: getRandomText(),
+  text: `#${index} ${getRandomText()}`,
   sender: allUsers[Math.floor(Math.random() * allUsers.length)],
 }));
 
+function getPage({ pageSize, messages, endIndex }) {
+  if (endIndex < 0) {
+    return messages.slice(messages.length - pageSize, messages.length);
+  }
+  return messages.slice(endIndex - pageSize, endIndex);
+}
+
 export const worker = setupWorker(
   rest.get('/api/messages', (req, res, ctx) => {
-    const {
-      message_id = allMessages[allMessages.length - 1].id,
-      prev_limit = 20,
-    } = req.params;
+    const message_id = req.url.searchParams.get('message_id') || -1;
+    const prev_limit = req.url.searchParams.get('prev_limit') || 20;
 
-    const lastIndex = allMessages.findIndex(
-      (message) => message.id === message_id
+    const endIndex = allMessages.findIndex(
+      (message) => message.id === Number(message_id)
     );
-    const result = allMessages.slice(lastIndex - prev_limit, lastIndex);
+
+    const result = getPage({
+      messages: allMessages,
+      pageSize: Number(prev_limit),
+      endIndex,
+    });
 
     return res(
       ctx.delay(1500),
