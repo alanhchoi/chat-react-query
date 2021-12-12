@@ -13,13 +13,13 @@ function App() {
     }
   }, []);
   return (
-    <div>
+    <div className="app__container">
       {messages.map((message) => {
         const { id, text, sender } = message;
         return (
-          <div key={id}>
-            <div>{sender.name}</div>
-            <div>{text}</div>
+          <div key={id} className="message">
+            <div className="message__sender">{sender.name}</div>
+            <div className="message__text">{text}</div>
           </div>
         );
       })}
