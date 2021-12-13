@@ -19,7 +19,9 @@ async function fetchUser(userId) {
 }
 
 function Sender({ sender }) {
-  const { data } = useQuery(['users', sender.id], () => fetchUser(sender.id));
+  const { data } = useQuery(['users', sender.id], () => fetchUser(sender.id), {
+    staleTime: 500,
+  });
   const isMuted = data?.isMuted;
   return (
     <div className="message__sender">
