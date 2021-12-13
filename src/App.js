@@ -1,7 +1,15 @@
-import { Fragment } from 'react';
+import { Fragment, useLayoutEffect, useRef } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
 import './App.css';
+
+function getScrollBottom(element) {
+  return element.scrollHeight - element.scrollTop - element.clientHeight;
+}
+
+function convertScrollBottomToScrollTop(scrollBottom, element) {
+  return element.scrollHeight - scrollBottom - element.clientHeight;
+}
 
 async function getPreviousMessages(messageId) {
   const searchParams = new URLSearchParams({ prev_limit: 20 });
@@ -47,6 +55,22 @@ function App() {
     }
   );
 
+  const containerRef = useRef();
+  const scrollBottomRef = useRef(0);
+
+  useLayoutEffect(() => {
+    if (containerRef.current == null) {
+      return;
+    }
+    containerRef.current.scrollTo(
+      0,
+      convertScrollBottomToScrollTop(
+        scrollBottomRef.current,
+        containerRef.current
+      )
+    );
+  }, [data]);
+
   if (status === 'loading') {
     return <div className="app__container">Loading...</div>;
   }
@@ -54,10 +78,13 @@ function App() {
     return <div className="app__container">Error! {error.message}</div>;
   }
   return (
-    <div className="app__container">
+    <div className="app__container" ref={containerRef}>
       <div>
         <button
-          onClick={() => fetchPreviousPage()}
+          onClick={() => {
+            scrollBottomRef.current = getScrollBottom(containerRef.current);
+            fetchPreviousPage();
+          }}
           disabled={!hasPreviousPage || isFetchingPreviousPage}
         >
           {isFetchingPreviousPage
